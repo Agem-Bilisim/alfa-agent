@@ -29,7 +29,7 @@ import subprocess
 import pprint
 import re
 
-OUTPUT_FILE = 'sysinfo.json'
+OUTPUT_FILE = 'data/sysinfo.json'
 
 info = dict()
 pp = pprint.PrettyPrinter(indent=4)
@@ -139,7 +139,12 @@ if result_code == 0:
 info['installed_packages'] = installed_packages
 
 # Users
-info['users'] = psutil.users()
+users = []
+for user in psutil.users():
+    if str(user[0]) is not 'None' and user[0] not in users:
+        users.append(user[0])
+info['users'] = users
+pp.pprint(users)
 
 # For debug purposes
 #pp.pprint(info)
