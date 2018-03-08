@@ -28,6 +28,10 @@ class System():
         def agent_dir_path():
             return os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
+        @staticmethod
+        def sys_out_path():
+            return os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'sys_info.json'))
+
     class Process(object):
         @staticmethod
         def process_by_pid(pid):
