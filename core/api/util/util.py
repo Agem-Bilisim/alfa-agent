@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import shutil
 
 if sys.platform == 'linux':
     from core.api.util.linux_util import Util
 else:
     from core.api.util.windows_util import Util
+
 
 class Util(Util):
     @staticmethod

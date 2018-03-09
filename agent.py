@@ -9,7 +9,7 @@ from core.api.system.system import System
 from core.base.command.command_manager import CommandManager
 
 def main(args=None):
-    if args and len(args) > 1 and args[1] == '_start':
+    if args and len(args) > 0 and args[1] == '_start':
         agent_daemon = AgentDaemon(System.Agent.pid_path())
         agent_daemon.start()
     else:
@@ -30,5 +30,5 @@ class Ahenk:
 
 if __name__ == '__main__':
     # Agent needs Python version 3.5!
-    assert sys.version_info >= (3,5)
+    #assert sys.version_info >= (3,5)
     main(sys.argv)
