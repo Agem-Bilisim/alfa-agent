@@ -5,7 +5,8 @@ __pycache__/
 *.pyproj
 *.sln
 *.pyc 
-sysinfo.json
+data/tmp/
+data/*.json
 
 # C extensions
 *.so

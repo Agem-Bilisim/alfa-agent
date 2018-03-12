@@ -51,3 +51,7 @@ class Util(Util):
         :return:
         """
         return os.path.exists(full_path)
+
+    @staticmethod
+    def server_url():
+        return "http://localhost:8080/alfa/agent"

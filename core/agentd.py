@@ -16,7 +16,7 @@ class AgentDaemon(Daemon):
         sysinfo.collect()
 
         # Start up http server
-        httpd = HTTPServer(('localhost', 8080), MessageHandler)
+        httpd = HTTPServer(('localhost', 8484), MessageHandler)
         httpd.serve_forever()
 
         #httpd.server_close()
