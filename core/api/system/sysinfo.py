@@ -102,7 +102,7 @@ def collect():
 
     # Disk
     disk = dict()
-    disk['disk_partitions'] = psutil.disk_partitions()
+    disk['disk_partitions'] = [dict(p._asdict()) for p in psutil.disk_partitions()]
     root_path = 'C:/' if sys.platform == 'win32' else '/'
     # total, used, free, percent
     disk['disk_usage'] = dict(psutil.disk_usage(root_path)._asdict())
@@ -145,9 +145,9 @@ def collect():
 
     # Network
     net = dict()
-    net['connection'] = psutil.net_connections(kind='inet')
+    #net['connection'] = psutil.net_connections(kind='inet')
     net_if_addrs = psutil.net_if_addrs()
-    net['interface_addresses'] = net_if_addrs
+    net['interface_addresses'] = [{"inet": str(key), "addr": [dict(addr._asdict()) for addr in value]} for key, value in net_if_addrs.items()]
     mac_addresses = list()
     ip_addresses = list()
     for key in net_if_addrs:
