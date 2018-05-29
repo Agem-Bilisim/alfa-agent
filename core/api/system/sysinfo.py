@@ -28,7 +28,7 @@ import socket
 import subprocess
 import pprint
 import re
-from core.api.system.system import System
+#from core.api.system.system import System
 
 def collect():
     info = dict()
@@ -54,7 +54,15 @@ def collect():
     # BIOS
     bios = dict()
     if sys.platform == 'win32':
-        print('TODO')
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-WmiObject win32_bios "
+                             "| Format-Table Manufacturer, @{Label='v'; Expression={'#SEP#' + $_.Version}} "
+                             "-HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        parts = output.strip().split('#SEP#')
+        bios['version'] = str(parts[-1])
+        bios['vendor'] = " ".join(parts[:-1])
     else:
         bios['vendor'] = subprocess.check_output("dmidecode --string bios-vendor", universal_newlines=True, shell=True)
         bios['release_date'] = subprocess.check_output("dmidecode --string bios-release-date", universal_newlines=True, shell=True)
@@ -76,7 +84,23 @@ def collect():
     memory['swap_memory'] = dict(psutil.swap_memory()._asdict())
     devices = list()
     if sys.platform == 'win32':
-        print('TODO')
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-WmiObject  win32_physicalmemory "
+                             "| Format-Table Manufacturer,Configuredclockspeed,MemoryType,Capacity -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        for line in str(output).strip().splitlines():
+            l = line.strip()
+            if not l:
+                continue
+            dimm = dict()
+            parts = l.split()
+            # size in mb
+            dimm['size'] = str(int(parts[-1]) // (1024*1024))
+            dimm['type'] = 'DDR3' if int(parts[-2]) == 24 else ('DDR2' if int(parts[-2]) == 21 else 'DDR')
+            dimm['speed'] = str(parts[-3])
+            dimm['manufacturer'] = " ".join(parts[:-3])
+            devices.append(dimm)
     else:
         # tail omits the first unrelated lines.
         output = subprocess.check_output("dmidecode -t 17 | tail -n +5", universal_newlines=True, shell=True)
@@ -88,13 +112,13 @@ def collect():
                 dimm = dict()
                 continue
             if l.startswith('Type:'):
-                dimm['type'] = l.replace("Type: ", "").strip().rstrip()
+                dimm['type'] = l.replace("Type: ", "").strip()
             if l.startswith('Size:'):
-                dimm['size'] = l.replace("Size: ", "").strip().rstrip()
+                dimm['size'] = l.replace("Size: ", "").strip()
             if l.startswith('Speed:'):
-                dimm['speed'] = l.replace("Speed: ", "").strip().rstrip()
+                dimm['speed'] = l.replace("Speed: ", "").strip()
             if l.startswith('Manufacturer:'):
-                dimm['manufacturer'] = l.replace("Manufacturer: ", "").strip().rstrip()
+                dimm['manufacturer'] = l.replace("Manufacturer: ", "").strip()
         if dimm:
             devices.append(dimm)
     memory['devices'] = devices
@@ -107,7 +131,43 @@ def collect():
     # total, used, free, percent
     disk['disk_usage'] = dict(psutil.disk_usage(root_path)._asdict())
     if sys.platform == 'win32':
-        print('TODO')
+        """
+        cmd = 'get-disk | where-object -filterscript {$_.BusType -Eq "SATA"} | Select-Object ' \
+              '@{Name="F"; Expression = {"#DESC#" + $_.FriendlyName + "#DESC#"}},' \
+              '@{Name="V"; Expression = {"#VER#" + $_.FirmwareVersion + "#VER#"}},' \
+              '@{Name="S"; Expression = {"#SER#" + $_.SerialNumber + "#SER#"}},' \
+              '@{Name="P"; Expression = {"#PRO#" + $_.Model + "#PRO#"}},' \
+              '@{Name="M"; Expression = {"#VEN#" + $_.Manufacturer + "#VEN#"}} | Format-Table -HideTableHeaders'
+        print(cmd)
+        p = subprocess.Popen(r"$command=" + cmd + r";$bytes = [System.Text.Encoding]::Unicode.GetBytes($command);$encodedCommand = [Convert]::ToBase64String($bytes);powershell.exe -encodedCommand $encodedCommand",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        """
+        cmd = r'get-disk | where-object -filterscript {$_.BusType -Eq "SATA"} | Select-Object ' \
+              '@{Name="F"; Expression = {"#DESC#" + $_.FriendlyName + "#DESC#"}},' \
+              '@{Name="V"; Expression = {"#VER#" + $_.FirmwareVersion + "#VER#"}},' \
+              '@{Name="S"; Expression = {"#SER#" + $_.SerialNumber + "#SER#"}},' \
+              '@{Name="P"; Expression = {"#PRO#" + $_.Model + "#PRO#"}},' \
+              '@{Name="M"; Expression = {"#VEN#" + $_.Manufacturer + "#VEN#"}} | Format-Table -HideTableHeaders'
+        print(cmd)
+        p = subprocess.Popen(r"$command=" + cmd + r";$bytes = [System.Text.Encoding]::Unicode.GetBytes($command);$encodedCommand = [Convert]::ToBase64String($bytes);powershell.exe -encodedCommand $encodedCommand",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, _ = p.communicate()
+        devices = list()
+        regex = re.compile('#DES#(.*)#DES#.*#VER#(.*)#VER#.*#SER#(.*)#SER#.*#PRO#(.*)#PRO#.*#VEN#(.*)#VEN#')
+        for line in str(output).strip().splitlines():
+            l = line.strip()
+            if not l:
+                continue
+            dev = dict()
+            m = regex.match(l)
+            if not m:
+                continue
+            dev['description'] = m.group(1) if m.group(1) is not None else ''
+            dev['version'] = m.group(2) if m.group(2) is not None else ''
+            dev['serial'] = m.group(3) if m.group(3) is not None else ''
+            dev['product'] = m.group(4) if m.group(4) is not None else ''
+            dev['vendor'] = m.group(5) if m.group(5) is not None else ''
+            devices.append(dev)
     else:
         output = subprocess.check_output("lshw -c disk -json", universal_newlines=True, shell=True)
         # lshw creates an invalid json, here we fix this output.
@@ -187,15 +247,18 @@ def collect():
     # Installed packages/softwares
     installed_packages = list()
     if sys.platform == 'win32':
-        output = subprocess.check_output(r"powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "
-                                   r"Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* "
-                                   r"| Select-Object -ExpandProperty DisplayName",
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                                         "-Command \"Get-ItemProperty -Name DisplayName -ErrorAction SilentlyContinue "
+                                         "HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* "
+                                         "| Format-Table -HideTableHeaders -Property DisplayName\"",
+                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
     else:
         output = subprocess.check_output(r"dpkg-query -f '${binary:Package} ${Version}\n' -W",
-                                   universal_newlines = True, shell = True)
-    installed_packages.extend([{"name": p.split()[0], "version": p.split()[1]}
-                               for p in str(output).strip().split('\n')])
+                                   universal_newlines=True, shell=True)
+    installed_packages.extend([{"name": p.split()[0] if sys.platform != 'win32' else p.strip().rstrip(),
+                                "version": p.split()[1] if sys.platform != 'win32' else ''}
+                               for p in str(output).strip().splitlines()])
     info['installed_packages'] = installed_packages
 
     # Users
@@ -206,10 +269,10 @@ def collect():
     info['users'] = users
 
     # For debug purposes
-    #pp.pprint(info)
+    pp.pprint(info)
 
-    with open(System.Agent.sys_out_path(), 'w') as f:
-        f.write(json.dumps(info))
+    #with open(System.Agent.sys_out_path(), 'w') as f:
+    #    f.write(json.dumps(info))
 
 
 if __name__ == '__main__':
