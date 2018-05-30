@@ -28,7 +28,6 @@ import socket
 import subprocess
 import pprint
 import re
-#from core.api.system.system import System
 
 def collect():
     info = dict()
@@ -324,9 +323,13 @@ def collect():
     # For debug purposes
     pp.pprint(info)
 
-    #with open(System.Agent.sys_out_path(), 'w') as f:
-    #    f.write(json.dumps(info))
-
+    try:
+        # Import here, so that we can execute the script outside of the project
+        from core.api.system.system import System
+        with open(System.Agent.sys_out_path(), 'w') as f:
+            f.write(json.dumps(info))
+    except:
+        print('Could not write to dump file.')
 
 if __name__ == '__main__':
     # Agent needs Python version 3.5!

@@ -8,7 +8,7 @@ import threading
 class MessageSender:
     def __init__(self, url):
         self.url = url
-        self.headers =  {'content-type': 'application/json'}
+        self.headers = {'content-type': 'application/json'}
 
     def send(self, payload):
         t = threading.Thread(target=worker, kwargs=dict(url=self.url, headers=self.headers, payload=payload))

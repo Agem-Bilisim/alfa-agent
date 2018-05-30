@@ -30,5 +30,5 @@ class Ahenk:
 
 if __name__ == '__main__':
     # Agent needs Python version 3.5!
-    #assert sys.version_info >= (3,5)
+    assert sys.version_info >= (3,5)
     main(sys.argv)

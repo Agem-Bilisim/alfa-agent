@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from external.pywebview import webview as webview
+#from external.pywebview import webview as webview
+import webview
 from core.base.messaging.message_sender import MessageSender
 from core.api.util.util import Util
 import threading
@@ -24,6 +25,7 @@ WEB_PAGE = """
                             .applyTheme("default");
                         var json = ###REPLACE_JSON### ;
                         window.survey = new Survey.Model(json);
+                        survey.locale = "tr";
                         survey
                             .onComplete
                             .add(function (result) {
@@ -47,8 +49,8 @@ class Survey:
         # Create a non-resizable webview window with 800x600 dimensions
         try:
             webview.create_window("Alfa GYBS Anketi", js_api=self.api)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     def get_loader(self):
         def load_html(json="{}"):
