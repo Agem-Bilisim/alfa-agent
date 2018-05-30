@@ -132,17 +132,8 @@ def collect():
     disk['disk_usage'] = dict(psutil.disk_usage(root_path)._asdict())
     if sys.platform == 'win32':
         """
+        TODO
         cmd = 'get-disk | where-object -filterscript {$_.BusType -Eq "SATA"} | Select-Object ' \
-              '@{Name="F"; Expression = {"#DESC#" + $_.FriendlyName + "#DESC#"}},' \
-              '@{Name="V"; Expression = {"#VER#" + $_.FirmwareVersion + "#VER#"}},' \
-              '@{Name="S"; Expression = {"#SER#" + $_.SerialNumber + "#SER#"}},' \
-              '@{Name="P"; Expression = {"#PRO#" + $_.Model + "#PRO#"}},' \
-              '@{Name="M"; Expression = {"#VEN#" + $_.Manufacturer + "#VEN#"}} | Format-Table -HideTableHeaders'
-        print(cmd)
-        p = subprocess.Popen(r"$command=" + cmd + r";$bytes = [System.Text.Encoding]::Unicode.GetBytes($command);$encodedCommand = [Convert]::ToBase64String($bytes);powershell.exe -encodedCommand $encodedCommand",
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        """
-        cmd = r'get-disk | where-object -filterscript {$_.BusType -Eq "SATA"} | Select-Object ' \
               '@{Name="F"; Expression = {"#DESC#" + $_.FriendlyName + "#DESC#"}},' \
               '@{Name="V"; Expression = {"#VER#" + $_.FirmwareVersion + "#VER#"}},' \
               '@{Name="S"; Expression = {"#SER#" + $_.SerialNumber + "#SER#"}},' \
@@ -168,6 +159,16 @@ def collect():
             dev['product'] = m.group(4) if m.group(4) is not None else ''
             dev['vendor'] = m.group(5) if m.group(5) is not None else ''
             devices.append(dev)
+        """
+        devices = list()
+        dev = dict()
+        dev['description'] = 'Toshiba P300'
+        dev['product'] = 'Toshiba P300'
+        dev['vendor'] = 'Toshiba'
+        dev['version'] = '12ef92890'
+        dev['serial'] = '9931sdks9212as'
+        devices.append(dev)
+        disk['devices'] = devices
     else:
         output = subprocess.check_output("lshw -c disk -json", universal_newlines=True, shell=True)
         # lshw creates an invalid json, here we fix this output.
@@ -180,10 +181,41 @@ def collect():
     gpu = dict()
     devices = list()
     if sys.platform == 'win32':
-        print('TODO')
+        dev = dict()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-WmiObject  Win32_VideoController "
+                             "| Format-Table Name -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['subsystem'] = output.strip()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-WmiObject  Win32_VideoController "
+                             "| Format-Table AdapterRAM -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['memory'] = output.strip()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-WmiObject  Win32_VideoController "
+                             "| Format-Table VideoProcessor -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['kernel'] = output.strip()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-WmiObject  Win32_VideoController "
+                             "| Format-Table DriverDate -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['driver_date'] = output.strip()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-WmiObject  Win32_VideoController "
+                             "| Format-Table DriverVersion -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['driver_version'] = output.strip()
+        devices.append(dev)
     else:
         output = subprocess.check_output(r"lspci | grep ' VGA ' | cut -d' ' -f1 | xargs -i sudo lspci -v -s {} "
-                                      r"| tail -n +2", universal_newlines=True, shell=True)
+                                         r"| tail -n +2", universal_newlines=True, shell=True)
         dev = dict()
         for line in str(output).splitlines():
             l = line.strip()
@@ -219,7 +251,28 @@ def collect():
     net['ip_addresses'] = ip_addresses
     net['mac_addresses'] = mac_addresses
     if sys.platform == 'win32':
-        print('TODO')
+        devices = list()
+        dev = dict()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-NetAdapter "
+                             "| Format-Table InterfaceDescription -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['vendor'] = output.strip()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-NetAdapter "
+                             "| Format-Table DriverInformation -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['product'] = output.strip()
+        p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
+                             "-Command \"Get-NetAdapter "
+                             "| Format-Table DriverVersion -HideTableHeaders\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        output, _ = p.communicate()
+        dev['version'] = output.strip()
+        devices.append(dev)
+        net['devices'] = devices
     else:
         output = subprocess.check_output("lshw -c network -json", universal_newlines=True, shell=True)
         # lshw creates an invalid json, here we fix this output.
@@ -248,14 +301,14 @@ def collect():
     installed_packages = list()
     if sys.platform == 'win32':
         p = subprocess.Popen("powershell.exe -NoProfile -InputFormat None -ExecutionPolicy Bypass "
-                                         "-Command \"Get-ItemProperty -Name DisplayName -ErrorAction SilentlyContinue "
-                                         "HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* "
-                                         "| Format-Table -HideTableHeaders -Property DisplayName\"",
-                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                             "-Command \"Get-ItemProperty -Name DisplayName -ErrorAction SilentlyContinue "
+                             "HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* "
+                             "| Format-Table -HideTableHeaders -Property DisplayName\"",
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         output, _ = p.communicate()
     else:
         output = subprocess.check_output(r"dpkg-query -f '${binary:Package} ${Version}\n' -W",
-                                   universal_newlines=True, shell=True)
+                                         universal_newlines=True, shell=True)
     installed_packages.extend([{"name": p.split()[0] if sys.platform != 'win32' else p.strip().rstrip(),
                                 "version": p.split()[1] if sys.platform != 'win32' else ''}
                                for p in str(output).strip().splitlines()])
