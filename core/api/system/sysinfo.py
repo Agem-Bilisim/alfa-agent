@@ -29,6 +29,22 @@ import subprocess
 import pprint
 import re
 
+
+def collect_and_send():
+    try:
+        collect()
+        from core.api.system.system import System
+        with open(System.Agent.sys_out_path(), 'r') as f:
+            _inf = f.read()
+        from core.base.messaging.message_sender import MessageSender
+        from core.api.util.util import Util
+        ms = MessageSender(Util.server_url() + "sysinfo-result")
+        ms.send(_inf)
+    except:
+        print('Error occurred while collecting or sending system info. Exiting.')
+        sys.exit(1)
+
+
 def collect():
     info = dict()
     pp = pprint.PrettyPrinter(indent=4)
@@ -320,16 +336,19 @@ def collect():
             users.append(user[0])
     info['users'] = users
 
-    # For debug purposes
-    pp.pprint(info)
-
     try:
         # Import here, so that we can execute the script outside of the project
         from core.api.system.system import System
+        # Install Path
+        info['agent_install_path'] = System.Agent.agent_dir_path()
+        # Dump resulting JSON!
         with open(System.Agent.sys_out_path(), 'w') as f:
             f.write(json.dumps(info))
     except:
         print('Could not write to dump file.')
+
+    # For debug purposes
+    pp.pprint(info)
 
 if __name__ == '__main__':
     # Agent needs Python version 3.5!

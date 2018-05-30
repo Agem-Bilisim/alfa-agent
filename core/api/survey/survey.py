@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-#from external.pywebview import webview as webview
 import webview
 from core.base.messaging.message_sender import MessageSender
 from core.api.util.util import Util

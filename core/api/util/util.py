@@ -54,4 +54,4 @@ class Util(Util):
 
     @staticmethod
     def server_url():
-        return "http://192.168.1.118:8080/alfa/agent"
+        return "http://192.168.1.118:8080/alfa/agent/"

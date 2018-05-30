@@ -4,6 +4,8 @@
 import json
 import requests
 import threading
+import uuid
+from uuid import getnode as get_mac
 
 class MessageSender:
     def __init__(self, url):
@@ -17,6 +19,11 @@ class MessageSender:
 
 def worker(url=None, headers=None, payload=None):
     try:
-        requests.post(url, data=payload if type(payload) is str else json.dumps(payload), headers=headers)
+        _payload = json.loads(payload) if type(payload) is str else payload
+        _payload['from'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, str(get_mac())))
+        print("Sending message with payload: {}".format(json.dumps(_payload)))
+        resp = requests.post(url, data=json.dumps(_payload), headers=headers)
+        print("Sent message to url:" + url if resp is not None and resp.status_code == 200 else
+              "Failed to send message to url:" + url)
     except ConnectionError as e:
         print(e)

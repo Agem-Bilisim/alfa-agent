@@ -13,7 +13,7 @@ class AgentDaemon(Daemon):
         """ docstring"""
 
         # Refresh collected system info
-        sysinfo.collect()
+        sysinfo.collect_and_send()
 
         # Start up http server
         httpd = HTTPServer(('localhost', 8484), MessageHandler)
