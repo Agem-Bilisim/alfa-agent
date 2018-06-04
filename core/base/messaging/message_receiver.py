@@ -24,16 +24,20 @@ class MessageHandler(BaseHTTPRequestHandler):
                 result = json.dumps(d) # to str
             # Send result to alfa server.
             print(result)
-            ms = MessageSender(Util.server_url() + "/sysinfo-result")
+            ms = MessageSender(Util.server_url() + "sysinfo-result")
             ms.send(result)
         elif self.path == '/create-survey':
             content_length = int(self.headers['Content-Length'])
             content = self.rfile.read(content_length)
-            body = json.load(content)
-            survey_json = body['survey_json']
-            survey = Survey(survey_json)
+            body = json.loads(content.decode('utf-8'))
+            survey_json = body['survey']
+            survey_id = body['survey_id']
+            survey = Survey(survey_json, survey_id)
+            self._set_headers()
+            self.wfile.write("{ \"response\": \"request received. processing...\"}".encode('utf-8'))
             # Result will be sent to alfa server when user completes the survey.
             survey.show()
+            return
 
         self._set_headers()
         self.wfile.write("{ \"response\": \"request received. processing...\"}".encode('utf-8'))

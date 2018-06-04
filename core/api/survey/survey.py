@@ -5,6 +5,7 @@ from core.base.messaging.message_sender import MessageSender
 from core.api.util.util import Util
 import threading
 import time
+import json
 
 WEB_PAGE = """
             <!DOCTYPE html>
@@ -12,16 +13,33 @@ WEB_PAGE = """
                 <head>
                     <title>Alfa Anket</title>
                     <script src="https://unpkg.com/jquery"></script>
-                    <script src="https://surveyjs.azureedge.net/1.0.13/survey.jquery.js"></script>
-                    <link href="https://surveyjs.azureedge.net/1.0.13/survey.css" type="text/css" rel="stylesheet"/>
+                    <script src="https://surveyjs.azureedge.net/1.0.24/survey.jquery.js"></script>
+                    <link href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet"/>
+                    <style>
+                        .btn-green {
+                            background-color: #1ab394;
+                            color: #fff;
+                            border-radius: 3px;
+                        }
+                        .btn-green:focus,
+                        .btn-green:hover {
+                            background-color: #18a689;
+                            color: #fff;
+                        }
+                        .panel-footer {
+                            padding: 0 15px;
+                            border: none;
+                            text-align: right;
+                            background-color: #fff;
+                        }
+                    </style>
                 </head>
                 <body>
                     <div id="surveyElement"></div>
                     <div id="surveyResult"></div>
                     <script type="text/javascript">
-                        Survey
-                            .StylesManager
-                            .applyTheme("default");
+                        Survey.Survey.cssType = "bootstrap";
+                        Survey.defaultBootstrapCss.navigationButton = "btn btn-green";
                         var json = ###REPLACE_JSON### ;
                         window.survey = new Survey.Model(json);
                         survey.locale = "tr";
@@ -38,10 +56,10 @@ WEB_PAGE = """
             """
 
 class Survey:
-    def __init__(self, json):
-        self.json = json
-        self.api = self.Api()
-        t = threading.Thread(target=self.get_loader(), kwargs=dict(json=json))
+    def __init__(self, _json, survey_id):
+        self.json = json.dumps(_json) if type(_json) is dict else str(_json)
+        self.api = self.Api(survey_id)
+        t = threading.Thread(target=self.get_loader(), kwargs=dict(json=self.json))
         t.start()
 
     def show(self):
@@ -57,11 +75,17 @@ class Survey:
         return load_html
 
     class Api:
+        def __init__(self, survey_id):
+            self.survey_id = survey_id
+
         def onComplete(self, result):
             time.sleep(0.1)  # sleep to prevent from the ui thread from freezing for a moment
             print(result)
+            res = dict()
+            res["result"] = result
+            res["survey_id"] = self.survey_id
             ms = MessageSender(Util.server_url() + "survey-result")
-            ms.send(result)
+            ms.send(res)
 
 
 if __name__ == '__main__':
@@ -92,5 +116,5 @@ if __name__ == '__main__':
         }
     """
 
-    s = Survey(test_json)
+    s = Survey(test_json, 0)
     s.show()
