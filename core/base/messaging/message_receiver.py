@@ -7,6 +7,7 @@ from core.api.survey.survey import Survey
 from core.base.messaging.message_sender import MessageSender
 from core.api.util.util import Util
 import json
+import webbrowser
 
 
 class MessageHandler(BaseHTTPRequestHandler):
@@ -38,6 +39,12 @@ class MessageHandler(BaseHTTPRequestHandler):
             # Result will be sent to alfa server when user completes the survey.
             survey.show()
             return
+        elif self.path == '/url-redirect':
+            content_length = int(self.headers['Content-Length'])
+            content = self.rfile.read(content_length)
+            body = json.loads(content.decode('utf-8'))
+            url_to_redirect = body['url']
+            webbrowser.open(url_to_redirect)
 
         self._set_headers()
         self.wfile.write("{ \"response\": \"request received. processing...\"}".encode('utf-8'))
