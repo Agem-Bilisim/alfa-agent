@@ -35,7 +35,10 @@ setup(
     license='MIT',
 
     keywords=[
-        '',
+        'Migration management and information system',
+        'Migration agent',
+        'Pardus',
+        'Migrating from Windows to Linux',
     ],
 
     classifiers=[
