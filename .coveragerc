@@ -1,0 +1,15 @@
+[run]
+source =
+    alfa_agent
+    tests
+branch = True
+omit =
+    alfa_agent/cli.py
+
+[report]
+exclude_lines =
+    no cov
+    no qa
+    noqa
+    pragma: no cover
+    if __name__ == .__main__.:

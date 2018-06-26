@@ -4,19 +4,12 @@ __pycache__/
 *$py.class
 *.pyproj
 *.sln
-*.pyc 
+*.pyc
 data/tmp/
 data/*.json
 
 # C extensions
 *.so
-
-# Conf Files
-ahenk/data/conf/*.ini
-
-#Ahenk Redundant Files
-ahenk/data/tmp/*
-ahenk/ahenk.exe
 
 # Sql Lite
 *.db

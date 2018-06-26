@@ -6,9 +6,9 @@ import sys
 import shutil
 
 if sys.platform == 'linux':
-    from core.api.util.linux_util import Util
+    from alfa_agent.core.api.util.linux_util import Util
 else:
-    from core.api.util.windows_util import Util
+    from alfa_agent.core.api.util.windows_util import Util
 
 
 class Util(Util):

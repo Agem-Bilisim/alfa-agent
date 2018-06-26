@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import threading
-from core.api.system.system import System
-from core.api.util.util import Util
+from alfa_agent.core.api.system.system import System
+from alfa_agent.core.api.util.util import Util
+
 
 class Fifo(object):
     def __init__(self):

@@ -4,9 +4,9 @@
 
 import sys
 
-from core.agentd import AgentDaemon
-from core.api.system.system import System
-from core.base.command.command_manager import CommandManager
+from alfa_agent.core.agentd import AgentDaemon
+from alfa_agent.core.api.system.system import System
+from alfa_agent.core.base.command.command_manager import CommandManager
 
 def main(args=None):
     if args and len(args) > 0 and args[1] == '_start':
@@ -29,6 +29,4 @@ class Ahenk:
 
 
 if __name__ == '__main__':
-    # Agent needs Python version 3.5!
-    assert sys.version_info >= (3,5)
     main(sys.argv)

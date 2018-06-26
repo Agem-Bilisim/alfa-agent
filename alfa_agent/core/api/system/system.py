@@ -4,7 +4,8 @@
 import os
 import psutil
 import sys
-from core.api.util.util import Util
+from alfa_agent.core.api.util.util import Util
+
 
 class System():
     class Agent(object):

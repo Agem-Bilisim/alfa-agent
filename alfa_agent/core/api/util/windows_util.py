@@ -5,9 +5,6 @@ import os
 import shutil
 import stat
 import subprocess
-from ntfy.backends.win32 import notify
-import ctypes
-import platform
 
 
 class Util:

@@ -7,6 +7,7 @@ import threading
 import uuid
 from uuid import getnode as get_mac
 
+
 class MessageSender:
     def __init__(self, url):
         self.url = url

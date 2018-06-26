@@ -1,0 +1,17 @@
+[metadata]
+name = 'alfa-agent'
+version = '0.0.1'
+description = 'Agent service for ALFA migration management and information system.'
+author = 'Emre Akkaya'
+author_email = 'emre.akkaya@agem.com.tr'
+license = 'MIT'
+url = 'https://github.com/_/alfa-agent'
+
+[requires]
+python_version = ['3.5', '3.6', 'pypy', 'pypy3']
+
+[build-system]
+requires = ['setuptools', 'wheel']
+
+[tool.hatch.commands]
+prerelease = 'hatch build'

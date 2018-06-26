@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import time
-import core.api.system.sysinfo as sysinfo
-from core.base.daemon.custom_daemon import Daemon
-from core.base.messaging.message_receiver import MessageHandler
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import alfa_agent.core.api.system.sysinfo as sysinfo
+from alfa_agent.core.base.daemon.custom_daemon import Daemon
+from alfa_agent.core.base.messaging.message_receiver import MessageHandler
+from http.server import HTTPServer
 
 
 class AgentDaemon(Daemon):

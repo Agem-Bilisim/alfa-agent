@@ -1,0 +1,4 @@
+py-cpuinfo
+pywebview
+psutil
+requests
