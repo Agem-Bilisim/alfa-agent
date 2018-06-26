@@ -26,8 +26,8 @@ Make sure you have at least Python 3.5.x installed, cd into project directory th
 .. code-block:: bash
 
     $ pip3 install --upgrade virtualenv hatch
-    $ pip3 install --ignore-installed --user -r requirements.txt
     $ hatch env alfa && hatch shell alfa
+    $ pip3 install -r requirements.txt
 
 
 That's it.
