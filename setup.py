@@ -20,7 +20,13 @@ REQUIRES = [
     'pywebview >= 2.0.3',
     'psutil >= 5.4.6',
     'requests >= 2.19.1',
+    'elevate >= 0.1.3',
 ]
+
+PLATFORM_REQUIRES = {
+    'win32': '',
+    'debian': ['lshw']
+}
 
 setup(
     name='alfa-agent',
@@ -57,4 +63,9 @@ setup(
     tests_require=['coverage', 'pytest'],
 
     packages=find_packages(),
+    entry_points={
+        'console_scripts': [
+            'alfa-agent = alfa_agent.cli:agent',
+        ],
+    },
 )

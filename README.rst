@@ -36,7 +36,10 @@ Now you can start development, or run the project by typing:
 
 .. code-block:: bash
 
-    $ python3 agent.py _start
+    # if you have NOT already activated alfa virtual environment.
+    $ hatch shell alfa
+    # we should type full path here in order to elevate virtual environment successfully!
+    $ python3 /home/USER/git/alfa-agent/alfa_agent/cli.py _start
 
 
 Versioning
@@ -57,6 +60,14 @@ We use hatch for versioning as well, here are a few examples:
     $ hatch grow major
     Updated /home/emre/git/alfa-agent/alfa_agent/__init__.py
     0.1.0 -> 1.0.0
+
+
+Requirement Management
+------------
+Requirements are managed either by PIP or during setup thanks to setup.py. So there are basicly two places we need to look:
+
+* setup.py REQUIRES array and
+* requirements.txt
 
 
 License

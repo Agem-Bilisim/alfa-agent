@@ -3,12 +3,24 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 
-from alfa_agent.core.agentd import AgentDaemon
-from alfa_agent.core.api.system.system import System
-from alfa_agent.core.base.command.command_manager import CommandManager
+from core.agentd import AgentDaemon
+from core.api.system.system import System
+from core.base.command.command_manager import CommandManager
+from elevate import elevate
 
-def main(args=None):
+try:
+    is_admin = os.getuid() == 0
+except AttributeError:
+    import ctypes
+    is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+if not is_admin:
+    elevate(show_console=False)
+
+
+def agent(args=None):
     if args and len(args) > 0 and args[1] == '_start':
         agent_daemon = AgentDaemon(System.Agent.pid_path())
         agent_daemon.start()
@@ -22,11 +34,5 @@ def main(args=None):
             sys.exit(1)
 
 
-class Ahenk:
-    @staticmethod
-    def run(args):
-        main(args)
-
-
 if __name__ == '__main__':
-    main(sys.argv)
+    agent(sys.argv)

@@ -4,14 +4,18 @@
 import os
 import psutil
 import sys
-from alfa_agent.core.api.util.util import Util
+from core.api.util.util import Util
 
 
-class System():
+class System:
     class Agent(object):
         @staticmethod
         def pid_path():
             return os.path.normpath(os.path.join(System.Agent.data_path(), 'tmp', 'agent.pid'))
+
+        @staticmethod
+        def conf_path():
+            return os.path.normpath(os.path.join(System.Agent.data_path(), 'conf', 'agent.ini'))
 
         @staticmethod
         def data_path():

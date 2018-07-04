@@ -19,8 +19,8 @@
 
 import os
 import psutil
-from alfa_agent.core.api.system.system import System
-from alfa_agent.core.api.util.util import Util
+from core.api.system.system import System
+from core.api.util.util import Util
 
 
 class Daemon:
@@ -35,7 +35,7 @@ class Daemon:
             try:
                 self.clear_tmp()
 
-                Util.create_file(self.pid_path)
+                Util.create_file(self.pid_path, mode=0o775)
                 pid_file = open(self.pid_path, 'w')
                 pid_file.write(str(os.getpid()))
                 pid_file.close()
@@ -48,7 +48,11 @@ class Daemon:
             self.run()
 
     def clear_tmp(self):
-        Util.delete_folder(os.path.dirname(self.pid_path))
+        """
+        Silently try to delete temporary data directory.
+        :return:
+        """
+        Util.delete_folder(os.path.dirname(self.pid_path), ignore_errors=True)
 
     def stop(self):
         try:
