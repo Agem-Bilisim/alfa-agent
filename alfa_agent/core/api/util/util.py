@@ -9,10 +9,9 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser  # ver. < 3.0
 
-config = ConfigParser()
-# FIX cyclic import!
+# FIXME: path must be read from System.py but first fix cyclic import!
 DATA_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data'))
-config.read(os.path.normpath(os.path.join(DATA_PATH, 'conf', 'agent.ini')), encoding='utf8')
+INI_PATH = os.path.normpath(os.path.join(DATA_PATH, 'conf', 'agent.ini'))
 
 
 class Util:
@@ -60,12 +59,26 @@ class Util:
 
     @staticmethod
     def get_str_prop(section, prop):
+        config = ConfigParser()
+        config.read(INI_PATH, encoding='utf8')
         return config.get(section, prop)
 
     @staticmethod
     def get_bool_prop(section, prop):
+        config = ConfigParser()
+        config.read(INI_PATH, encoding='utf8')
         return config.getboolean(section, prop)
 
     @staticmethod
     def get_int_prop(section, prop):
+        config = ConfigParser()
+        config.read(INI_PATH, encoding='utf8')
         return config.getint(section, prop)
+
+    @staticmethod
+    def set_str_prop(section, prop, val):
+        config = ConfigParser()
+        config.read(INI_PATH, encoding='utf8')
+        config[section][prop] = val
+        with open(INI_PATH, 'w') as f:
+            config.write(f)

@@ -25,7 +25,7 @@ REQUIRES = [
 
 PLATFORM_REQUIRES = {
     'win32': '',
-    'debian': ['lshw']
+    'debian': ['lshw', 'python-gi', 'gir1.2-webkit-3.0']
 }
 
 setup(

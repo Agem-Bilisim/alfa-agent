@@ -4,8 +4,7 @@
 import json
 import requests
 import threading
-import uuid
-from uuid import getnode as get_mac
+from core.api.util.util import Util
 
 
 class MessageSender:
@@ -21,7 +20,8 @@ class MessageSender:
 def worker(url=None, headers=None, payload=None):
     try:
         _payload = json.loads(payload) if type(payload) is str else payload
-        _payload['from'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, str(get_mac())))
+        _payload['from'] = Util.get_str_prop("AGENT", "messaging_id")
+        assert _payload['from']
         print("Sending message with payload: {}".format(json.dumps(_payload)))
         resp = requests.post(url, data=json.dumps(_payload), headers=headers)
         print("Sent message to url:" + url if resp is not None and resp.status_code == 200 else
