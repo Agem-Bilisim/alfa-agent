@@ -63,19 +63,19 @@ class Util:
     def get_str_prop(section, prop):
         config = ConfigParser()
         config.read(INI_PATH, encoding='utf8')
-        return config.get(section, prop) if prop in config else None
+        return config.get(section, prop) if config.has_option(section, prop) else None
 
     @staticmethod
     def get_bool_prop(section, prop):
         config = ConfigParser()
         config.read(INI_PATH, encoding='utf8')
-        return config.getboolean(section, prop)
+        return config.getboolean(section, prop) if config.has_option(section, prop) else None
 
     @staticmethod
     def get_int_prop(section, prop):
         config = ConfigParser()
         config.read(INI_PATH, encoding='utf8')
-        return config.getint(section, prop)
+        return config.getint(section, prop) if config.has_option(section, prop) else None
 
     @staticmethod
     def set_str_prop(section, prop, val):
