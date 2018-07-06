@@ -20,9 +20,6 @@ Windows7/8/10 (with admin privileges):
 """
 import sys
 import os
-print('\n'.join(sys.path))
-print(os.environ['PYTHONPATH'].split(os.pathsep))
-
 import platform
 import cpuinfo
 import psutil
@@ -352,8 +349,10 @@ def collect(debug=False):
         try:
             # Import here, so that we can execute the script outside of the project
             from core.api.system.system import System
+            from core.api.util.util import Util
             # Install Path
             info['agent_install_path'] = System.Agent.agent_dir_path()
+            Util.delete_file(System.Agent.sys_out_path())
             # Dump resulting JSON!
             with open(System.Agent.sys_out_path(), 'w') as f:
                 f.write(json.dumps(info))

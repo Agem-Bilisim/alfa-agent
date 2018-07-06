@@ -29,6 +29,8 @@ class Util:
 
         file = open(full_path, 'w+')
         file.close()
+
+        # TODO we should respect file owner!
         return True
 
     @staticmethod

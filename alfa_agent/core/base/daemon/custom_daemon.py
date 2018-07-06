@@ -35,7 +35,8 @@ class Daemon:
             try:
                 self.clear_tmp()
 
-                Util.create_file(self.pid_path, mode=0o775)
+                # TODO We should use 775 AFTER we respect file owner!
+                Util.create_file(self.pid_path, mode=0o777)
                 pid_file = open(self.pid_path, 'w')
                 pid_file.write(str(os.getpid()))
                 pid_file.close()

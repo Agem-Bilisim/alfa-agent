@@ -31,7 +31,5 @@ class AgentDaemon(Daemon):
         httpd = HTTPServer(('', Util.get_int_prop("CONNECTION", "agent_port")), MessageHandler)
         httpd.serve_forever()
 
-        # httpd.server_close() This should not be necessary!
-        print("serve_forever passed")
         while True:
             time.sleep(1)
