@@ -18,18 +18,19 @@ Windows7/8/10 (with admin privileges):
 > python3.exe collect-sysinfo.py
 
 """
+import sys
+import os
+print('\n'.join(sys.path))
+print(os.environ['PYTHONPATH'].split(os.pathsep))
 
 import platform
 import cpuinfo
 import psutil
-import sys
 import json
 import socket
 import subprocess
 import re
 import ctypes
-import os
-
 
 try:
     is_admin = os.getuid() == 0

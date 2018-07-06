@@ -11,7 +11,6 @@ from core.api.util.util import Util
 
 class AgentDaemon(Daemon):
     def run(self):
-
         # Generate messaging ID if not already exists
         if not Util.get_str_prop("AGENT", "messaging_id"):
             import uuid

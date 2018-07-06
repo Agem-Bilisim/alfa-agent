@@ -8,6 +8,7 @@ import os
 from core.agentd import AgentDaemon
 from core.api.system.system import System
 from core.base.command.command_manager import CommandManager
+from core.api.util.util import Util
 from elevate import elevate
 
 try:
@@ -16,7 +17,9 @@ except AttributeError:
     import ctypes
     is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
 
-if not is_admin:
+should_elevate = Util.get_bool_prop("AGENT", "send_sysinfo_on_startup")
+
+if not is_admin and should_elevate:
     elevate(show_console=False)
 
 
