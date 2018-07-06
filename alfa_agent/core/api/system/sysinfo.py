@@ -38,11 +38,11 @@ except AttributeError:
 def collect_and_send():
     try:
         collect()
-        from core.api.system.system import System
+        from alfa_agent.core.api.system.system import System
         with open(System.Agent.sys_out_path(), 'r') as f:
             _inf = f.read()
-        from core.base.messaging.message_sender import MessageSender
-        from core.api.util.util import Util
+        from alfa_agent.core.base.messaging.message_sender import MessageSender
+        from alfa_agent.core.api.util.util import Util
         ms = MessageSender(Util.get_str_prop("CONNECTION", "server_url") + "sysinfo-result")
         ms.send(_inf)
     except:
@@ -348,8 +348,8 @@ def collect(debug=False):
 
         try:
             # Import here, so that we can execute the script outside of the project
-            from core.api.system.system import System
-            from core.api.util.util import Util
+            from alfa_agent.core.api.system.system import System
+            from alfa_agent.core.api.util.util import Util
             # Install Path
             info['agent_install_path'] = System.Agent.agent_dir_path()
             Util.delete_file(System.Agent.sys_out_path())

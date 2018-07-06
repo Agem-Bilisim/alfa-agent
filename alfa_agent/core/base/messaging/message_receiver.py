@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from http.server import BaseHTTPRequestHandler
-from core.api.system.system import System
-from core.api.survey.survey import Survey
-from core.base.messaging.message_sender import MessageSender
-from core.api.util.util import Util
+from alfa_agent.core.api.system.system import System
+from alfa_agent.core.api.survey.survey import Survey
+from alfa_agent.core.base.messaging.message_sender import MessageSender
+from alfa_agent.core.api.util.util import Util
 import json
 import webbrowser
 

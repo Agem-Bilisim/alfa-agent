@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import webview
-from core.base.messaging.message_sender import MessageSender
-from core.api.util.util import Util
+from alfa_agent.core.base.messaging.message_sender import MessageSender
+from alfa_agent.core.api.util.util import Util
 import threading
 import time
 import json

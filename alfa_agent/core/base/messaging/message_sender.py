@@ -4,7 +4,7 @@
 import json
 import requests
 import threading
-from core.api.util.util import Util
+from alfa_agent.core.api.util.util import Util
 
 
 class MessageSender:

@@ -5,10 +5,10 @@
 import sys
 import os
 
-from core.agentd import AgentDaemon
-from core.api.system.system import System
-from core.base.command.command_manager import CommandManager
-from core.api.util.util import Util
+from alfa_agent.core.agentd import AgentDaemon
+from alfa_agent.core.api.system.system import System
+from alfa_agent.core.base.command.command_manager import CommandManager
+from alfa_agent.core.api.util.util import Util
 from elevate import elevate
 
 try:
