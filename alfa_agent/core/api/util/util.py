@@ -63,7 +63,7 @@ class Util:
     def get_str_prop(section, prop):
         config = ConfigParser()
         config.read(INI_PATH, encoding='utf8')
-        return config.get(section, prop)
+        return config.get(section, prop) if prop in config else None
 
     @staticmethod
     def get_bool_prop(section, prop):

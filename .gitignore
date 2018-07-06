@@ -7,6 +7,7 @@ __pycache__/
 *.pyc
 data/tmp/
 data/*.json
+alfa_agent/data/tmp/agent.pid
 
 # C extensions
 *.so
