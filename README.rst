@@ -36,10 +36,32 @@ Now you can start development, or run the project by typing:
 
 .. code-block:: bash
 
-    # if you have NOT already activated alfa virtual environment.
-    $ hatch shell alfa
-    # we should type full path here in order to elevate virtual environment successfully!
+    $ hatch shell alfa # if you have NOT already activated alfa virtual environment.
     $ python3 /home/USER/git/alfa-agent/alfa_agent/cli.py _start
+
+
+We should type full path here in order to elevate virtual environment successfully!
+
+
+Normally, when the agent starts up it tries to collect system info and send to the Alfa Server.
+
+In order to do so, it needs to run with elevated privileges if it is not already. This is done automatically after
+checking 'send_sysinfo_on_startup' property in agent.ini file. BUT if you are running the agent inside PyCharm,
+the debugger loses the newly (elevated) process hence it fails. So if you are using PyCharm, make sure to set
+'send_sysinfo_on_startup' False.
+
+
+Packaging & Distribution
+------------
+Type the following:
+
+.. code-block:: bash
+
+    $ hatch shell alfa # if you have NOT already activated alfa virtual environment.
+    $ hatch build
+
+
+This will produce one source file (*.tar.gz) and one binary file (*.whl) under dist/ directory.
 
 
 Versioning

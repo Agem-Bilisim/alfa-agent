@@ -28,6 +28,7 @@ PLATFORM_REQUIRES = {
     'debian': ['lshw', 'python-gi', 'gir1.2-webkit-3.0']
 }
 
+# See https://blog.ionelmc.ro/presentations/packaging for more info about packaging.
 setup(
     name='alfa-agent',
     version=version,
@@ -63,6 +64,7 @@ setup(
     tests_require=['coverage', 'pytest'],
 
     packages=find_packages(),
+    include_package_data=True,
     entry_points={
         'console_scripts': [
             'alfa-agent = alfa_agent.cli:agent',
