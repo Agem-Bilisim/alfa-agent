@@ -6,12 +6,13 @@ alfa-agent
 .. contents:: **Table of Contents**
     :backlinks: none
 
+
 Installation
 ------------
 
 alfa-agent is distributed on `PyPI <https://pypi.org>`_ as a universal
 wheel and is available on Linux/macOS and Windows and supports
-Python 2.7/3.5+ and PyPy.
+Python 3.5+ and PyPy.
 
 .. code-block:: bash
 
@@ -19,7 +20,7 @@ Python 2.7/3.5+ and PyPy.
 
 
 Development Environment
-------------
+-----------------------
 
 Make sure you have at least Python 3.5.x installed, cd into project directory then type the following commands:
 
@@ -37,22 +38,26 @@ Now you can start development, or run the project by typing:
 .. code-block:: bash
 
     $ hatch shell alfa # if you have NOT already activated alfa virtual environment.
-    $ python3 /home/USER/git/alfa-agent/alfa_agent/cli.py _start
+    $ export PYTHONPATH=$PYTHONPATH:$HOME/git/alfa-agent # so that Python can find the package
+    $ python3 $HOME/git/alfa-agent/alfa_agent/cli.py _start
 
 
-We should type full path here in order to elevate virtual environment successfully!
+We should provide the full path here so that the elevated process can work properly.
 
+**NOTE:**
 
-Normally, when the agent starts up it tries to collect system info and send to the Alfa Server.
+Normally, when the agent starts up it tries to collect system info and send it to the Alfa Server. In order to do so,
+it needs to run with elevated privileges if it is not already. This is done automatically after checking
+``send_sysinfo_on_startup`` property in ``agent.ini`` file.
 
-In order to do so, it needs to run with elevated privileges if it is not already. This is done automatically after
-checking 'send_sysinfo_on_startup' property in agent.ini file. BUT if you are running the agent inside PyCharm,
+If you are running the agent inside *PyCharm*,
 the debugger loses the newly (elevated) process hence it fails. So if you are using PyCharm, make sure to set
-'send_sysinfo_on_startup' False.
+``send_sysinfo_on_startup=False``.
 
 
 Packaging & Distribution
-------------
+------------------------
+
 Type the following:
 
 .. code-block:: bash
@@ -65,7 +70,8 @@ This will produce one source file (*.tar.gz) and one binary file (*.whl) under d
 
 
 Versioning
-------------
+----------
+
 We use hatch for versioning as well, here are a few examples:
 
 .. code-block:: bash
@@ -85,7 +91,8 @@ We use hatch for versioning as well, here are a few examples:
 
 
 Requirement Management
-------------
+----------------------
+
 Requirements are managed either by PIP or during setup thanks to setup.py. So there are basicly two places we need to look:
 
 * setup.py REQUIRES array and

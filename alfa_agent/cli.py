@@ -5,6 +5,13 @@
 import sys
 import os
 
+# This is an ugly workaround to ensure all module imports work properly when running the agent locally.
+# See https://stackoverflow.com/questions/1893598/pythonpath-vs-sys-path and
+# https://askubuntu.com/questions/470982/how-to-add-a-python-module-to-syspath/471168 for more info.
+MODULE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if MODULE_PATH not in sys.path:
+    sys.path.insert(1, MODULE_PATH)
+
 from alfa_agent.core.agentd import AgentDaemon
 from alfa_agent.core.api.system.system import System
 from alfa_agent.core.base.command.command_manager import CommandManager
@@ -18,7 +25,6 @@ except AttributeError:
     is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 should_elevate = Util.get_bool_prop("AGENT", "send_sysinfo_on_startup")
-
 if not is_admin and should_elevate:
     elevate(show_console=False)
 
