@@ -21,6 +21,7 @@ REQUIRES = [
     'psutil >= 5.4.6',
     'requests >= 2.19.1',
     'elevate >= 0.1.3',
+    'PyYAML >= 3.13',
 ]
 
 PLATFORM_REQUIRES = {

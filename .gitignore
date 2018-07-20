@@ -9,6 +9,7 @@ data/tmp/
 data/*.json
 alfa_agent/data/tmp/agent.pid
 alfa_agent/data/sys_info.json
+alfa_agent/conf/config.yaml
 
 # C extensions
 *.so

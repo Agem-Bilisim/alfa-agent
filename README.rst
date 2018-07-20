@@ -90,13 +90,32 @@ We use hatch for versioning as well, here are a few examples:
     0.1.0 -> 1.0.0
 
 
+Logging
+-------
+
+Logging can be configured either in the default config file `data/conf/logging.yaml` or by providing a specific
+path to another config file in the environment variable named *LOG_CFG* such as this:
+
+.. code-block:: bash
+
+    $ LOG_CFG=my_logging.yaml python3 $HOME/git/alfa-agent/alfa_agent/cli.py _start
+
+
+Default config file `data/conf/logging.yaml` consists of Console logger with *DEBUG* level, and two rotating file
+loggers for *INFO* and *ERROR* seperately.
+
+
+If no config file is provided or the agent cannot find/read the provided file, basic configuration with *INFO* level
+will be used as backup.
+
+
 Requirement Management
 ----------------------
 
-Requirements are managed either by PIP or during setup thanks to setup.py. So there are basicly two places we need to look:
+Requirements are managed either by *PIP* or during setup via `setup.py`. So there are two places we need to look:
 
-* setup.py REQUIRES array and
 * requirements.txt
+* setup.py (*REQUIRES* array)
 
 
 License
