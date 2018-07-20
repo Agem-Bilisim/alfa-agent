@@ -77,5 +77,5 @@ class Util:
         for k in keys:
             _config = _config.setdefault(k, {})
         _config.setdefault(latest, val)
-        with open(CONF_PATH, 'rt') as o:
-            o.write(yaml.dump(_config, default_flow_style=False))
+        with open(CONF_PATH, 'wt') as o:
+            o.write(yaml.dump(config, default_flow_style=False))

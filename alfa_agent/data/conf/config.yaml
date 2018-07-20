@@ -1,10 +1,6 @@
----
-connection:
-    agent_port: 8484
-    server_url: 'http://192.168.1.201:8080/alfa/agent/'
-
 agent:
-    send_sysinfo_on_startup: False
-    logging_level: 'INFO'
-    messaging_id: '74f5386b-886f-5dc0-ac5b-7570ccd62146'
-...
+  logging_level: INFO
+  send_sysinfo_on_startup: false
+connection:
+  agent_port: 8484
+  server_url: http://192.168.1.201:8080/alfa/agent/
