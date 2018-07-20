@@ -4,19 +4,21 @@
 import json
 import os
 import threading
+import logging
 from alfa_agent.core.api.system.system import System
 from alfa_agent.core.api.util.util import Util
 from alfa_agent.core.base.command.fifo import Fifo
 
 
 class CommandManager(object):
-    def __init__(self):
+    def __init__(self, logger=None):
         self.commands = ['start', 'stop']
+        self.logger = logger or logging.getLogger(__name__)
 
     def set_event(self, *args):
         try:
             if args is None or len(args) < 1:
-                print('Lack of arguments')
+                self.logger.error('Missing arguments.')
                 return False
 
             params = args[0]
@@ -30,13 +32,15 @@ class CommandManager(object):
                 thread.start()
             return True
         except Exception as e:
+            self.logger.error("Cannot start the agent process.", exc_info=True)
             return False
 
     def start(self, is_running, params):
         if is_running:
-            print('Agent already started')
+            self.logger.warning('Agent already running')
         else:
-            print('Agent is starting...')
+            self.logger.info('Starting the agent...')
+            # TODO
             Util.execute('Start-Process -FilePath {0} -ArgumentList "{1} _start" -WindowStyle hidden'.format(
                 System.get_python_path(), os.path.join(System.Agent.agent_dir_path(), 'agent.py')))
 
@@ -45,6 +49,6 @@ class CommandManager(object):
         if is_running:
             data['event'] = params[1]
         else:
-            print('Agent not running!')
+            self.logger.info('Agent already stopped.')
             data = None
         return data

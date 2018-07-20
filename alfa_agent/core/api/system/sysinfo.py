@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
 
@@ -28,6 +29,7 @@ import socket
 import subprocess
 import re
 import ctypes
+import logging
 
 try:
     is_admin = os.getuid() == 0
@@ -36,6 +38,7 @@ except AttributeError:
 
 
 def collect_and_send():
+    logger = logging.getLogger(__name__)
     try:
         collect()
         from alfa_agent.core.api.system.system import System
@@ -43,14 +46,15 @@ def collect_and_send():
             _inf = f.read()
         from alfa_agent.core.base.messaging.message_sender import MessageSender
         from alfa_agent.core.api.util.util import Util
-        ms = MessageSender(Util.get_str_prop("CONNECTION", "server_url") + "sysinfo-result")
+        ms = MessageSender(Util.read_prop("connection.server_url") + "sysinfo-result")
         ms.send(_inf)
-    except:
-        print('Error occurred while collecting or sending system info. Exiting.')
+    except Exception as e:
+        logger.error('Error occurred while collecting or sending system info. Exiting.', exc_info=True)
         sys.exit(1)
 
 
 def collect(debug=False):
+    logger = logging.getLogger(__name__)
     try:
         info = dict()
 
@@ -94,7 +98,7 @@ def collect(debug=False):
 
         # CPU
         cpu = dict(cpuinfo.get_cpu_info())
-        cpu['processor'] = uname_result.processor
+        cpu['processor'] = uname_result.processor if uname_result.processor else uname_result.machine
         cpu['cpu-times'] = psutil.cpu_times()
         cpu['pyhsical-core-count'] = psutil.cpu_count(False)
         cpu['logical-core-count'] = psutil.cpu_count(True)
@@ -162,7 +166,6 @@ def collect(debug=False):
                   '@{Name="S"; Expression = {"#SER#" + $_.SerialNumber + "#SER#"}},' \
                   '@{Name="P"; Expression = {"#PRO#" + $_.Model + "#PRO#"}},' \
                   '@{Name="M"; Expression = {"#VEN#" + $_.Manufacturer + "#VEN#"}} | Format-Table -HideTableHeaders'
-            print(cmd)
             p = subprocess.Popen(r"$command=" + cmd + r";$bytes = [System.Text.Encoding]::Unicode.GetBytes($command);$encodedCommand = [Convert]::ToBase64String($bytes);powershell.exe -encodedCommand $encodedCommand",
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             output, _ = p.communicate()
@@ -356,13 +359,13 @@ def collect(debug=False):
             # Dump resulting JSON!
             with open(System.Agent.sys_out_path(), 'w') as f:
                 f.write(json.dumps(info))
+            logger.info("Collected system info: {}".format(str(System.Agent.sys_out_path())))
         except Exception as e1:
-            print('Could not write to dump file.')
-
+            logger.error('Could not write to dump file.', exc_info=True)
     except Exception as e:
-        print("Error occurred during collecting system info: " + str(e))
+        logger.error("Error occurred during collecting system info.", exc_info=True)
         if not is_admin:
-            print("It appears you are not running the script with admin privileges. Agent must be run as sudo!")
+            logger.warning("It appears you are not running the script with admin privileges. Agent must be run as sudo!")
         raise e
 
     # For debug purposes

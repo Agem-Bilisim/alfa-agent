@@ -4,6 +4,7 @@
 import json
 import requests
 import threading
+import logging
 from alfa_agent.core.api.util.util import Util
 
 
@@ -18,13 +19,14 @@ class MessageSender:
 
 
 def worker(url=None, headers=None, payload=None):
+    logger = logging.getLogger(__name__)
     try:
         _payload = json.loads(payload) if type(payload) is str else payload
-        _payload['from'] = Util.get_str_prop("AGENT", "messaging_id")
+        _payload['from'] = Util.read_prop("agent.messaging_id")
         assert _payload['from']
-        print("Sending message with payload: {}".format(json.dumps(_payload)))
+        logger.debug("Sending message with payload: {}".format(json.dumps(_payload)))
         resp = requests.post(url, data=json.dumps(_payload), headers=headers)
-        print("Sent message to url:" + url if resp is not None and resp.status_code == 200 else
-              "Failed to send message to url:" + url)
+        logger.info("Sent message to url:" + url if resp is not None and resp.status_code == 200
+                    else "Failed to send message to url:" + url)
     except ConnectionError as e:
-        print(e)
+        logger.error("Cannot connect to server.", exc_info=True)

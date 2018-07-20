@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import webview
 from alfa_agent.core.base.messaging.message_sender import MessageSender
@@ -6,6 +7,7 @@ from alfa_agent.core.api.util.util import Util
 import threading
 import time
 import json
+import logging
 
 WEB_PAGE = """
             <!DOCTYPE html>
@@ -55,10 +57,12 @@ WEB_PAGE = """
             </html>
             """
 
+
 class Survey:
-    def __init__(self, _json, survey_id):
+    def __init__(self, _json, survey_id, logger=None):
         self.json = json.dumps(_json) if type(_json) is dict else str(_json)
         self.api = self.Api(survey_id)
+        self.logger = logger or logging.getLogger(__name__)
         t = threading.Thread(target=self.get_loader(), kwargs=dict(json=self.json))
         t.start()
 
@@ -67,9 +71,10 @@ class Survey:
         try:
             webview.create_window("Alfa GYBS Anketi", js_api=self.api)
         except Exception as e:
-            print(e)
+            self.logger.error('Failed to create window', exc_info=True)
 
-    def get_loader(self):
+    @staticmethod
+    def get_loader():
         def load_html(json="{}"):
             webview.load_html(WEB_PAGE.replace("###REPLACE_JSON###", json))
         return load_html
@@ -80,11 +85,11 @@ class Survey:
 
         def onComplete(self, result):
             time.sleep(0.1)  # sleep to prevent from the ui thread from freezing for a moment
-            print(result)
+            self.logger.debug(result)
             res = dict()
             res["result"] = result
             res["survey_id"] = self.survey_id
-            ms = MessageSender(Util.get_str_prop("CONNECTION", "server_url") + "survey-result")
+            ms = MessageSender(Util.read_prop("connection.server_url") + "survey-result")
             ms.send(res)
 
 

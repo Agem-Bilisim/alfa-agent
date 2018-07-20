@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import threading
+import logging
 from alfa_agent.core.api.system.system import System
 from alfa_agent.core.api.util.util import Util
 
 
 class Fifo(object):
-    def __init__(self):
+    def __init__(self, logger=None):
+        self.logger = logger or logging.getLogger(__name__)
         self.lock = threading.Lock()
         self.path = System.Agent.fifo_file()
         if not Util.does_exist(self.path):
@@ -20,7 +22,7 @@ class Fifo(object):
             file = open(self.path, 'a+')
             file.write(content)
         except Exception as e:
-            print('Error:{0}'.format(str(e)))
+            self.logger.error("Cannot push to FIFO.", exc_info=True)
         finally:
             file.close()
             self.lock.release()
@@ -36,7 +38,7 @@ class Fifo(object):
                 w_file.writelines(lines[1:])
                 w_file.close()
         except Exception as e:
-            print('Error:{0}'.format(str(e)))
+            self.logger.error("Cannot pull from FIFO.", exc_info=True)
         finally:
             self.lock.release()
         queue.put(result)

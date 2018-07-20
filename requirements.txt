@@ -1,3 +1,4 @@
+PyYAML
 elevate>=0.1.3
 requests>=2.19.1
 py-cpuinfo>=4.0.0

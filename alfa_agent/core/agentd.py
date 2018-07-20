@@ -12,7 +12,7 @@ from alfa_agent.core.api.util.util import Util
 class AgentDaemon(Daemon):
     def run(self):
         # Generate messaging ID if not already exists
-        if not Util.get_str_prop("AGENT", "messaging_id"):
+        if not Util.read_prop("agent.messaging_id"):
             import uuid
             from uuid import getnode as get_mac
             # Depending of initialization of network interfaces in different order,
@@ -21,14 +21,14 @@ class AgentDaemon(Daemon):
             #
             # Therefore Alfa-server must match an agent to its database record by looking
             # not only its 'from' field but also all of its MAC addresses.
-            Util.set_str_prop("AGENT", "messaging_id", str(uuid.uuid5(uuid.NAMESPACE_DNS, str(get_mac()))))
+            Util.write_prop("agent.messaging_id", str(uuid.uuid5(uuid.NAMESPACE_DNS, str(get_mac()))))
 
         # Refresh collected system info
-        if Util.get_bool_prop("AGENT", "send_sysinfo_on_startup"):
+        if Util.read_prop("agent.send_sysinfo_on_startup"):
             sysinfo.collect_and_send()
 
         # Start up http server
-        httpd = HTTPServer(('', Util.get_int_prop("CONNECTION", "agent_port")), MessageHandler)
+        httpd = HTTPServer(('', Util.read_prop("connection.agent_port")), MessageHandler)
         httpd.serve_forever()
 
         while True:

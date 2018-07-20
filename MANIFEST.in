@@ -1,3 +1,4 @@
 include README.rst
 include LICENSE-MIT
 include data/conf/*.ini
+include data/conf/*.yaml

@@ -3,15 +3,11 @@
 
 import os
 import shutil
-
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser  # ver. < 3.0
+import yaml
 
 # FIXME: path must be read from System.py but first fix cyclic import!
 DATA_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data'))
-INI_PATH = os.path.normpath(os.path.join(DATA_PATH, 'conf', 'agent.ini'))
+CONF_PATH = os.path.normpath(os.path.join(DATA_PATH, 'conf', 'config.yaml'))
 
 
 class Util:
@@ -60,27 +56,26 @@ class Util:
         return os.path.exists(full_path)
 
     @staticmethod
-    def get_str_prop(section, prop):
-        config = ConfigParser()
-        config.read(INI_PATH, encoding='utf8')
-        return config.get(section, prop) if config.has_option(section, prop) else None
+    def read_prop(key):
+        with open(CONF_PATH, 'rt') as f:
+            config = yaml.safe_load(f.read())
+        _config = config
+        keys = str(key).split('.')
+        for k in keys:
+            _config = _config.get(k) if k in _config else None
+            if _config is None:
+                break
+        return _config
 
     @staticmethod
-    def get_bool_prop(section, prop):
-        config = ConfigParser()
-        config.read(INI_PATH, encoding='utf8')
-        return config.getboolean(section, prop) if config.has_option(section, prop) else None
-
-    @staticmethod
-    def get_int_prop(section, prop):
-        config = ConfigParser()
-        config.read(INI_PATH, encoding='utf8')
-        return config.getint(section, prop) if config.has_option(section, prop) else None
-
-    @staticmethod
-    def set_str_prop(section, prop, val):
-        config = ConfigParser()
-        config.read(INI_PATH, encoding='utf8')
-        config[section][prop] = val
-        with open(INI_PATH, 'w') as f:
-            config.write(f)
+    def write_prop(key, val):
+        with open(CONF_PATH, 'rt') as i:
+            config = yaml.safe_load(i.read())
+        _config = config
+        keys = key.split('.')
+        latest = keys.pop()
+        for k in keys:
+            _config = _config.setdefault(k, {})
+        _config.setdefault(latest, val)
+        with open(CONF_PATH, 'rt') as o:
+            o.write(yaml.dump(_config, default_flow_style=False))

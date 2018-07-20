@@ -1,35 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# This file is part of Lider Ahenk.
-#
-# Lider Ahenk is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Lider Ahenk is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Lider Ahenk.  If not, see <http://www.gnu.org/licenses/>.
-
-
 import os
 import psutil
+import logging
 from alfa_agent.core.api.system.system import System
 from alfa_agent.core.api.util.util import Util
 
 
 class Daemon:
-    def __init__(self, pid_path):
+    def __init__(self, pid_path, logger=None):
+        self.logger = logger or logging.getLogger(__name__)
         self.pid_path = pid_path
 
     def start(self):
         if self.get_pid():
-            print('Agent is already running with pid: {}'.format(self.get_pid()))
+            self.logger.warning('Agent is already running with pid: {}'.format(self.get_pid()))
             return
         else:
             try:
@@ -41,9 +27,9 @@ class Daemon:
                 pid_file.write(str(os.getpid()))
                 pid_file.close()
 
-                print('Agent started with pid: {}'.format(self.get_pid()))
+                self.logger.info('Agent started with pid: {}'.format(self.get_pid()))
             except Exception as e:
-                print('A problem occurred while trying to start Agent. Error Message {0}'.format(str(e)))
+                self.logger.error('Cannot start the agent.', exc_info=True)
                 return
 
             self.run()
@@ -64,9 +50,9 @@ class Daemon:
                 p.terminate()
                 Util.delete_file(System.Agent.fifo_file())
             else:
-                print('Could not find any process.')
+                self.logger.warning('Could not find any process... It may have been already stopped.')
         except Exception as e:
-            print('A problem occurred while trying to stop Ahenk. Error Message {0}'.format(str(e)))
+            self.logger.error('Cannot stop the agent.', exc_info=True)
 
     def del_pid(self):
         Util.delete_file(self.pid_path)

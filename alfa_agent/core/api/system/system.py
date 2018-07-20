@@ -18,6 +18,10 @@ class System:
             return os.path.normpath(os.path.join(System.Agent.data_path(), 'conf', 'agent.ini'))
 
         @staticmethod
+        def log_conf_path():
+            return os.path.normpath(os.path.join(System.Agent.data_path(), 'conf', 'logging.yaml'))
+
+        @staticmethod
         def data_path():
             return os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data'))
 
