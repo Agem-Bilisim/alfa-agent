@@ -4,3 +4,11 @@ agent:
 connection:
   agent_port: 8484
   server_url: http://192.168.1.201:8080/alfa/agent/
+platform_requires:
+  win32:
+  debian-gtk:
+    - 'lshw'
+    - 'python3-gi'
+    - 'gir1.2-webkit-3.0'
+  debian-qt:
+    - 'python3-pyqt5'
