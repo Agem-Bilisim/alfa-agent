@@ -1,4 +1,3 @@
 include README.rst
 include LICENSE-MIT
-include data/conf/*.ini
-include data/conf/*.yaml
+include alfa_agent/data/conf/*.yaml

@@ -102,7 +102,7 @@ path to another config file in the environment variable named *LOG_CFG* such as 
 
 
 Default config file `data/conf/logging.yaml` consists of Console logger with *DEBUG* level, and two rotating file
-loggers for *INFO* and *ERROR* seperately.
+loggers for *INFO* and *ERROR* separately.
 
 
 If no config file is provided or the agent cannot find/read the provided file, basic configuration with *INFO* level
@@ -115,7 +115,7 @@ Requirement Management
 Requirements are managed either by *PIP* or during setup via `setup.py`. So there are two places we need to look:
 
 * requirements.txt
-* setup.py (*REQUIRES* array)
+* setup.py (*REQUIRES* array for PyPI dependencies and *PLATFORM_REQUIRES* for 3rd party dependencies)
 
 
 License
