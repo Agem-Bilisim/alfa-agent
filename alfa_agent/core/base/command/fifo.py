@@ -13,7 +13,7 @@ class Fifo(object):
         self.lock = threading.Lock()
         self.path = System.Agent.fifo_file()
         if not Util.does_exist(self.path):
-            Util.create_file(self.path)
+            Util.create_file(self.path, mode=0o775)
 
     def push(self, content):
         file = None

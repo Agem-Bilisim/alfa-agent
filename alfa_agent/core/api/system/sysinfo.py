@@ -357,6 +357,7 @@ def collect(debug=False):
             info['agent_install_path'] = System.Agent.agent_dir_path()
             Util.delete_file(System.Agent.sys_out_path())
             # Dump resulting JSON!
+            Util.create_file(System.Agent.sys_out_path())
             with open(System.Agent.sys_out_path(), 'w') as f:
                 f.write(json.dumps(info))
             logger.info("Collected system info: {}".format(str(System.Agent.sys_out_path())))

@@ -19,8 +19,6 @@ class Daemon:
             return
         else:
             try:
-                self.clear_tmp()
-
                 Util.create_file(self.pid_path, mode=0o775)
                 with open(self.pid_path, 'w') as pid_file:
                     pid_file.write(str(os.getpid()))
@@ -31,13 +29,6 @@ class Daemon:
                 return
 
             self.run()
-
-    def clear_tmp(self):
-        """
-        Silently try to delete temporary data directory.
-        :return:
-        """
-        Util.delete_folder(os.path.dirname(self.pid_path), ignore_errors=True)
 
     def stop(self):
         try:

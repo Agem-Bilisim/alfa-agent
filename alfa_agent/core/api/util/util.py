@@ -20,8 +20,8 @@ class Util:
         :return:
         """
         if os.path.exists(full_path):
-            return None
-        elif not os.path.exists(os.path.dirname(full_path)):
+                return None
+        if not os.path.exists(os.path.dirname(full_path)):
             os.makedirs(os.path.dirname(full_path), mode=mode, exist_ok=True)
 
         file = open(full_path, 'w+')
@@ -36,15 +36,6 @@ class Util:
                 os.chown(full_path, os.stat(parent).st_uid, os.stat(parent).st_gid)
 
         return True
-
-    @staticmethod
-    def delete_folder(full_path, ignore_errors=False):
-        """
-        :param full_path:
-        :param ignore_errors:
-        :return:
-        """
-        shutil.rmtree(full_path, ignore_errors)
 
     @staticmethod
     def delete_file(full_path):

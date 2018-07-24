@@ -112,10 +112,14 @@ will be used as backup.
 Requirement Management
 ----------------------
 
-Requirements are managed either by *PIP* or during setup via `setup.py`. So there are two places we need to look:
+Requirements needed to setup development environment are declared in `requirements.txt` file which can be
+installed via `pip3 install -r requirements.txt`.
 
-* requirements.txt
-* setup.py (*REQUIRES* array for PyPI dependencies and *PLATFORM_REQUIRES* for 3rd party dependencies)
+Requirements for the installation, on the other hand, are declared in `setup.py` (*REQUIRES* array) for Python modules
+and in `config.yaml` (*platform_requires* section) file for the platform-specific dependencies.
+
+Python modules are automatically handled during agent installation but platform-specific dependencies
+must be installed manually by typing `python -m alfa_agent install` with sudo (or Admin for Windows) privileges.
 
 
 License

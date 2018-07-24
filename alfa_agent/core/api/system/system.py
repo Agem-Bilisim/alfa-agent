@@ -11,11 +11,11 @@ class System:
     class Agent(object):
         @staticmethod
         def pid_path():
-            return os.path.normpath(os.path.join(System.Agent.data_path(), 'tmp', 'agent.pid'))
+            return os.path.normpath(os.path.join(System.Agent.data_path(), 'agent.pid'))
 
         @staticmethod
         def conf_path():
-            return os.path.normpath(os.path.join(System.Agent.data_path(), 'conf', 'agent.ini'))
+            return os.path.normpath(os.path.join(System.Agent.data_path(), 'conf', 'config.yaml'))
 
         @staticmethod
         def log_conf_path():
@@ -27,7 +27,7 @@ class System:
 
         @staticmethod
         def fifo_file():
-            return os.path.normpath(os.path.join(System.Agent.data_path(), 'tmp', 'agent.fifo'))
+            return os.path.normpath(os.path.join(System.Agent.data_path(), 'agent.fifo'))
 
         @staticmethod
         def is_running(pid):
@@ -39,7 +39,7 @@ class System:
 
         @staticmethod
         def sys_out_path():
-            return os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data', 'sys_info.json'))
+            return os.path.normpath(os.path.join(System.Agent.data_path(), 'sys_info.json'))
 
     class Process(object):
         @staticmethod
