@@ -4,6 +4,7 @@
 import os
 import shutil
 import yaml
+import sys
 
 # FIXME: path must be read from System.py but first fix cyclic import!
 DATA_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data'))
@@ -26,7 +27,14 @@ class Util:
         file = open(full_path, 'w+')
         file.close()
 
-        # TODO we should respect file owner!
+        # Change owner of the newly created file to match with the owner of the parent directory
+        # This prevents any permission conflict when running the agent.
+        # BUT this is only for Debian-based system, Windows DOES NOT have a simple method to change owner :(
+        if sys.platform == 'linux':
+            parent = os.path.normpath(os.path.join(full_path, '..'))
+            if os.path.exists(parent):
+                os.chown(full_path, os.stat(parent).st_uid, os.stat(parent).st_gid)
+
         return True
 
     @staticmethod

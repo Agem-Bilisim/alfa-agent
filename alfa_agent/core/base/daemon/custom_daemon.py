@@ -21,11 +21,9 @@ class Daemon:
             try:
                 self.clear_tmp()
 
-                # TODO We should use 775 AFTER we respect file owner!
-                Util.create_file(self.pid_path, mode=0o777)
-                pid_file = open(self.pid_path, 'w')
-                pid_file.write(str(os.getpid()))
-                pid_file.close()
+                Util.create_file(self.pid_path, mode=0o775)
+                with open(self.pid_path, 'w') as pid_file:
+                    pid_file.write(str(os.getpid()))
 
                 self.logger.info('Agent started with pid: {}'.format(self.get_pid()))
             except Exception as e:
