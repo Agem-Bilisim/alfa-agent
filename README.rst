@@ -16,7 +16,17 @@ Python 3.5+ and PyPy.
 
 .. code-block:: bash
 
-    $ pip install alfa-agent
+    $ sudo pip3 install alfa-agent
+    $ sudo python3 -m alfa_agent _start
+
+It can also be installed from binary file (*.whl) by typing the following:
+
+.. code-block:: bash
+
+    $ sudo pip3 install alfa_agent-<VERSION_NUMBER>.whl
+    $ sudo python3 -m alfa_agent _start
+
+See *Packaging & Distribution* section in order to generate binary files.
 
 
 Development Environment
@@ -67,6 +77,8 @@ Type the following:
 
 
 This will produce one source file (*.tar.gz) and one binary file (*.whl) under dist/ directory.
+
+You can also use ``hatch clean`` to remove any build artifacts (e.g. *.pyc, __pycache__, *.egg-info)
 
 
 Versioning
