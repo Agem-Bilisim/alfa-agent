@@ -11,9 +11,9 @@ import yaml
 # See https://stackoverflow.com/questions/1893598/pythonpath-vs-sys-path and
 # https://askubuntu.com/questions/470982/how-to-add-a-python-module-to-syspath/471168 for more info.
 # -----------------------------------------------------------------------
-MODULE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if MODULE_PATH not in sys.path:
-    sys.path.insert(1, MODULE_PATH)
+#MODULE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#if MODULE_PATH not in sys.path:
+#    sys.path.insert(1, MODULE_PATH)
 # -----------------------------------------------------------------------
 
 from alfa_agent.core.agentd import AgentDaemon

@@ -5,10 +5,10 @@ description = 'Agent service for ALFA migration management and information syste
 author = 'Emre Akkaya'
 author_email = 'emre.akkaya@agem.com.tr'
 license = 'MIT'
-url = 'https://github.com/_/alfa-agent'
+url = 'https://github.com/Agem-Bilisim/alfa-agent'
 
 [requires]
-python_version = ['3.5', '3.6', 'pypy', 'pypy3']
+python_version = ['3.5', '3.6', 'pypy3']
 
 [build-system]
 requires = ['setuptools', 'wheel']

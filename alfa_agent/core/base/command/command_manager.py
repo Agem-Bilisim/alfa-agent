@@ -7,7 +7,6 @@ import threading
 import logging
 import sys
 from subprocess import check_output, CalledProcessError
-from alfa_agent.core.api.system.system import System
 from alfa_agent.core.api.util.util import Util
 from alfa_agent.core.base.command.fifo import Fifo
 from alfa_agent.core.base.daemon.custom_daemon import Daemon

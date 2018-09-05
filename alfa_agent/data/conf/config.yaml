@@ -3,7 +3,7 @@ agent:
   send_sysinfo_on_startup: false
 connection:
   agent_port: 8484
-  server_url: http://192.168.1.201:8080/alfa/agent/
+  server_url: http://192.168.1.196:8080/alfa/agent/
 platform_requires:
   debian-gtk:
   - lshw
